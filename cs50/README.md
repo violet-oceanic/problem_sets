@@ -1,4 +1,4 @@
-# imparare
+# problem_sets
 
 ## CS50
 
@@ -23,3 +23,7 @@ This is [CS50](https://cs50.harvard.edu/x/2024/), Harvard University’s introdu
 - [substitution.c](https://github.com/violet-oceanic/imparare/blob/main/cs50/pset2/substitution.c)
 
 #### Week 3 - Algorithms
+- [sort.md](https://github.com/violet-oceanic/problem_sets/blob/main/cs50/pset3/sort.md)
+- [plurality.c](https://github.com/violet-oceanic/problem_sets/blob/main/cs50/pset3/plurality.c)
+- [runoff.c](https://github.com/violet-oceanic/problem_sets/blob/main/cs50/pset3/runoff.c)
+- [tideman.c](https://github.com/violet-oceanic/problem_sets/blob/main/cs50/pset3/tideman.c)
