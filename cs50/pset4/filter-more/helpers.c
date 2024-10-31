@@ -7,12 +7,12 @@ int max_check(int n);
 // Convert image to grayscale
 void grayscale(int height, int width, RGBTRIPLE image[height][width])
 {
-    printf("height[%i] x width[%i]\n", height, width);
+    //printf("height[%i] x width[%i]\n", height, width);
     for (int h = 0; h < height; h++)
     {
         for (int w = 0; w < width; w++)
         {
-            int avg = round((image[h][w].rgbtRed + image[h][w].rgbtGreen + image[h][w].rgbtBlue) / 3);
+            double avg = round(((float) image[h][w].rgbtRed + (float) image[h][w].rgbtGreen + (float) image[h][w].rgbtBlue) / 3);
             image[h][w].rgbtRed = (int) avg;
             image[h][w].rgbtGreen = (int) avg;
             image[h][w].rgbtBlue = (int) avg;
@@ -25,59 +25,77 @@ void grayscale(int height, int width, RGBTRIPLE image[height][width])
 // Reflect image horizontally
 void reflect(int height, int width, RGBTRIPLE image[height][width])
 {
-    printf("height[%i] x width[%i]\n", height, width);
+    //printf("height[%i] x width[%i]\n", height, width);
+    int updated_width;
+    if (width % 2 == 0)
+    {
+        updated_width = width/2;
+    }
+    else
+    {
+        updated_width = (width - 1)/2;
+    }
+
     for (int h = 0; h < height; h++)
     {
-        for (int w = 0; w <= width/2; w++)
+
+        for (int w = 0; w < updated_width; w++)
         {
             int temp_Red = image[h][w].rgbtRed;
-            image[h][w].rgbtRed = image[h][width - 1 - w].rgbtRed;
-            image[h][width - 1 - w].rgbtRed = temp_Red;
-            
+            image[h][w].rgbtRed = image[h][width - (w + 1)].rgbtRed;
+            image[h][width - (w + 1)].rgbtRed = temp_Red;
+
             int temp_Green = image[h][w].rgbtGreen;
-            image[h][w].rgbtGreen = image[h][width - 1 - w].rgbtGreen;
-            image[h][width - 1 - w].rgbtGreen = temp_Green;
-            
+            image[h][w].rgbtGreen = image[h][width - (w + 1)].rgbtGreen;
+            image[h][width - (w + 1)].rgbtGreen = temp_Green;
+
             int temp_Blue = image[h][w].rgbtBlue;
-            image[h][w].rgbtBlue = image[h][width - 1 - w].rgbtBlue;
-            image[h][width - 1 - w].rgbtBlue = temp_Blue;
+            image[h][w].rgbtBlue = image[h][width - (w + 1)].rgbtBlue;
+            image[h][width - (w + 1)].rgbtBlue = temp_Blue;
         }
     }
     return;
 }
+
 
 // Blur image
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
     RGBTRIPLE blur_image[height][width];
     
-    printf("height[%i] x width[%i]\n", height, width);
+    //printf("height[%i] x width[%i]\n", height, width);
 
 
     for (int h = 0; h < height; h++)
     {
         for (int w = 0; w < width; w++)
         {
-            int total_rgbtRed = 0;
-            int total_rgbtGreen = 0;
-            int total_rgbtBlue = 0;
-            int count = 0;
-            for (int n = h-1; n <= h+1; n++)
+            double total_rgbtRed = 0;
+            double total_rgbtGreen = 0;
+            double total_rgbtBlue = 0;
+            double count = 0;
+            for (int n = -1; n < 2; n++)
             {
-                for (int p = w-1; p <= w+1; p++)
+                for (int p = -1; p < 2; p++)
                 {
-                    if ((n >= 0) && (n < height) && (p >= 0) && (p < width))
+                    if ((h + n) < 0 || (h + n) >= height)
                     {
-                        total_rgbtRed += image[n][p].rgbtRed;
-                        total_rgbtGreen += image[n][p].rgbtGreen;
-                        total_rgbtBlue += image[n][p].rgbtBlue;
-                        count++;
+                        continue;
                     }
+                    if ((w + p) < 0 || (w + p) >= width)
+                    {
+                        continue;
+                    }
+                    total_rgbtRed += image[h + n][w + p].rgbtRed;
+                    total_rgbtGreen += image[h + n][w + p].rgbtGreen;
+                    total_rgbtBlue += image[h + n][w + p].rgbtBlue;
+                    count++;
+
                 }
             }
-            blur_image[h][w].rgbtRed = (int) round((total_rgbtRed / count));
-            blur_image[h][w].rgbtGreen= (int) round((total_rgbtGreen / count));
-            blur_image[h][w].rgbtBlue = (int) round((total_rgbtBlue / count));
+            blur_image[h][w].rgbtRed = round((total_rgbtRed / count));
+            blur_image[h][w].rgbtGreen= round((total_rgbtGreen / count));
+            blur_image[h][w].rgbtBlue = round((total_rgbtBlue / count));
         }
     }
 
@@ -98,115 +116,54 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
 {
     RGBTRIPLE edge_image[height][width];
     
-    printf("height[%i] x width[%i]\n", height, width);
+    //printf("height[%i] x width[%i]\n", height, width);
 
+    int gx[] = {-1,0,1,-2,0,2,-1,0,1};
+    int gy[] = {-1,-2,-1,0,0,0,1,2,1};
 
     for (int h = 0; h < height; h++)
     {
         for (int w = 0; w < width; w++)
         {
             //printf("H:%i by W:%i\n", h, w);
-            int xtotal_rgbtRed = 0;
-            int xtotal_rgbtGreen = 0;
-            int xtotal_rgbtBlue = 0;
-            int ytotal_rgbtRed = 0;
-            int ytotal_rgbtGreen = 0;
-            int ytotal_rgbtBlue = 0;
-
-            for (int n = h-1; n <= h+1; n++)
+            double xtotal_rgbtRed = 0;
+            double xtotal_rgbtGreen = 0;
+            double xtotal_rgbtBlue = 0;
+            double ytotal_rgbtRed = 0;
+            double ytotal_rgbtGreen = 0;
+            double ytotal_rgbtBlue = 0;
+            int count = 0;
+            for (int n = -1; n < 2; n++)
             {
-                for (int p = w-1; p <= w+1; p++)
+                for (int p = -1; p < 2; p++)
                 {
-                    if (((n < 0) || (n >= height) || (p < 0) || (p >= width)))
+                    if ((h + n) < 0 || (h + n) >= height)
                     {
-                        //printf("h[%i] by w[%i] is outside border\n", n, p);
+                        count++;
+                        continue;
                     }
-                    else
+                    if ((w + p) < 0 || (w + p) >= width)
                     {
-                        
-                        //Gx
-                        // middle left (-2)
-                        if ((n == (h)) && (p == (w - 1)))
-                        {
-                            xtotal_rgbtRed += (image[n][p].rgbtRed * -2);
-                            xtotal_rgbtGreen += (image[n][p].rgbtGreen * -2); 
-                            xtotal_rgbtBlue += (image[n][p].rgbtBlue * -2);
-                        }
-                        // top left, bottom left (-1)
-                        if (((n == (h - 1)) || (n == (h + 1))) && (p == (w - 1)))
-                        {
-                            xtotal_rgbtRed += (image[n][p].rgbtRed * -1);
-                            xtotal_rgbtGreen += (image[n][p].rgbtGreen * -1); 
-                            xtotal_rgbtBlue += (image[n][p].rgbtBlue * -1);
-                        }
-                        // top middle, middle, bottom middle (0)
-                        if ((n == ((h - 1)) || (n == (h)) || (n == (h + 1))) && (p == (w)))
-                        {
-                            xtotal_rgbtRed += (image[n][p].rgbtRed * 0);
-                            xtotal_rgbtGreen += (image[n][p].rgbtGreen * 0); 
-                            xtotal_rgbtBlue += (image[n][p].rgbtBlue * 0); 
-                        }
-                        // top right, bottom right (1)
-                        if ((n == ((h - 1)) || (n == (h + 1))) && (p == (w + 1)))
-                        {
-                            xtotal_rgbtRed += (image[n][p].rgbtRed * 1);
-                            xtotal_rgbtGreen += (image[n][p].rgbtGreen * 1); 
-                            xtotal_rgbtBlue += (image[n][p].rgbtBlue * 1); 
-                        }
-                        // middle right (2)
-                        if ((n == (h)) && (p == (w + 1)))
-                        {
-                            xtotal_rgbtRed += (image[n][p].rgbtRed * 2);
-                            xtotal_rgbtGreen += (image[n][p].rgbtGreen * 2); 
-                            xtotal_rgbtBlue += (image[n][p].rgbtBlue * 2); 
-                        }
-
-
-                        //Gy
-                        // top middle (-2)
-                        if ((n == (h - 1)) && (p == (w)))
-                        {
-                            ytotal_rgbtRed += (image[n][p].rgbtRed * -2);
-                            ytotal_rgbtGreen += (image[n][p].rgbtGreen * -2); 
-                            ytotal_rgbtBlue += (image[n][p].rgbtBlue * -2); 
-                        }
-                        // top left, top right (-1)
-                        if ((n == (h - 1)) && (p == ((w - 1)) || (p == (w + 1))))
-                        {
-                            ytotal_rgbtRed += (image[n][p].rgbtRed * -1);
-                            ytotal_rgbtGreen += (image[n][p].rgbtGreen * -1); 
-                            ytotal_rgbtBlue += (image[n][p].rgbtBlue * -1); 
-                        }
-                        // middle left, middle, middle right (0)
-                        if ((n == (h)) && (p == ((w - 1)) || (p == (w)) || (p == (w + 1))))
-                        {
-                            ytotal_rgbtRed += (image[n][p].rgbtRed * 0);
-                            ytotal_rgbtGreen += (image[n][p].rgbtGreen * 0); 
-                            ytotal_rgbtBlue += (image[n][p].rgbtBlue * 0); 
-                        }
-                        // bottom left, bottom right (1)
-                        if ((n == (h - 1)) && (p == ((w - 1)) || (p == (w + 1))))
-                        {
-                            ytotal_rgbtRed += (image[n][p].rgbtRed * 1);
-                            ytotal_rgbtGreen += (image[n][p].rgbtGreen * 1); 
-                            ytotal_rgbtBlue += (image[n][p].rgbtBlue * 1); 
-                        }
-                        // bottom middle (2)
-                        if ((n == (h - 1)) && (p == (w)))
-                        {
-                            ytotal_rgbtRed += (image[n][p].rgbtRed * 2);
-                            ytotal_rgbtGreen += (image[n][p].rgbtGreen * 2); 
-                            ytotal_rgbtBlue += (image[n][p].rgbtBlue * 2); 
-                        }
+                        count++;
+                        continue;
                     }
+                    //Gx
+                    xtotal_rgbtRed += (image[h + n][w + p].rgbtRed * (gx[count]));
+                    xtotal_rgbtGreen += (image[h + n][w + p].rgbtGreen * (gx[count])); 
+                    xtotal_rgbtBlue += (image[h + n][w + p].rgbtBlue * (gx[count]));
+                    //Gy
+                    ytotal_rgbtRed += (image[h + n][w + p].rgbtRed * (gy[count]));
+                    ytotal_rgbtGreen += (image[h + n][w + p].rgbtGreen * (gy[count])); 
+                    ytotal_rgbtBlue += (image[h + n][w + p].rgbtBlue * (gy[count]));
+                    count++;
                 }
             }
-            edge_image[h][w].rgbtRed = (int) round(sqrt(((xtotal_rgbtRed * xtotal_rgbtRed) + (ytotal_rgbtRed * ytotal_rgbtRed))));
-            edge_image[h][w].rgbtGreen = (int) round(sqrt(((xtotal_rgbtGreen * xtotal_rgbtGreen) + (ytotal_rgbtGreen * ytotal_rgbtGreen))));
-            edge_image[h][w].rgbtBlue = (int) round(sqrt(((xtotal_rgbtBlue * xtotal_rgbtBlue) + (ytotal_rgbtBlue * ytotal_rgbtBlue))));
-            //printf(" - xTotalRed: %i | yTotalRed: %i | combined: %i\n", xtotal_rgbtRed, ytotal_rgbtRed, edge_image[h][w].rgbtRed);
-            //printf(" - xTotalGreen: %i | yTotalGreen: %i | combined: %i\n", xtotal_rgbtGreen, ytotal_rgbtGreen, edge_image[h][w].rgbtGreen);
-            //printf(" - xTotalBlue: %i | yTotalBlue: %i | combined: %i\n", xtotal_rgbtBlue, ytotal_rgbtBlue, edge_image[h][w].rgbtBlue);
+            edge_image[h][w].rgbtRed = max_check(round(sqrt(pow(xtotal_rgbtRed, 2) + pow(ytotal_rgbtRed, 2))));
+            edge_image[h][w].rgbtGreen = max_check(round(sqrt(pow(xtotal_rgbtGreen, 2) + pow(ytotal_rgbtGreen, 2))));
+            edge_image[h][w].rgbtBlue = max_check(round(sqrt(pow(xtotal_rgbtBlue, 2) + pow(ytotal_rgbtBlue, 2))));
+            //printf(" - xTotalRed: %lf | yTotalRed: %lf | combined: %i\n", xtotal_rgbtRed, ytotal_rgbtRed, edge_image[h][w].rgbtRed);
+            //printf(" - xTotalGreen: %lf | yTotalGreen: %lf | combined: %i\n", xtotal_rgbtGreen, ytotal_rgbtGreen, edge_image[h][w].rgbtGreen);
+            //printf(" - xTotalBlue: %lf | yTotalBlue: %lf | combined: %i\n", xtotal_rgbtBlue, ytotal_rgbtBlue, edge_image[h][w].rgbtBlue);
         }
     }
 
@@ -214,9 +171,9 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
     {
         for (int y = 0; y < width; y++)
         {
-            image[x][y].rgbtRed = max_check(edge_image[x][y].rgbtRed);
-            image[x][y].rgbtGreen = max_check(edge_image[x][y].rgbtGreen);
-            image[x][y].rgbtBlue = max_check(edge_image[x][y].rgbtBlue);
+            image[x][y].rgbtRed = edge_image[x][y].rgbtRed;
+            image[x][y].rgbtGreen = edge_image[x][y].rgbtGreen;
+            image[x][y].rgbtBlue = edge_image[x][y].rgbtBlue;
         }
     }
     return;
