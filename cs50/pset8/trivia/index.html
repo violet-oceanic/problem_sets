@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+        <link href="styles.css" rel="stylesheet">
+        <title>Trivia!</title>
+        <script>
+            // TODO: Add code to check answers to questions
+             document.addEventListener("DOMContentLoaded", function() {
+                let money = document.querySelector('#money');
+                    money.addEventListener('click', function() {
+                        money.style.backgroundColor = 'red';
+                        love.style.backgroundColor = '';
+                        ft.style.backgroundColor = '';
+                    })
+                let love = document.querySelector('#love');
+                    love.addEventListener('click', function() {
+                        money.style.backgroundColor = '';
+                        love.style.backgroundColor = 'red';
+                        ft.style.backgroundColor = '';
+                    })
+                let ft = document.querySelector('#fourty_two');
+                    ft.addEventListener('click', function() {
+                        money.style.backgroundColor = '';
+                        love.style.backgroundColor = '';
+                        ft.style.backgroundColor = 'green';
+                    })  
+                let response = document.querySelector('#response');
+                let swallow = document.querySelector('#swallow');
+                let submit = document.querySelector('#submit');
+                submit.addEventListener('click', function() {
+                    if (swallow.value.toUpperCase() == 'AFRICAN')
+                    {
+                        swallow.style.color = 'green';
+                        response.innerHTML = 'Correct!';
+                        response.style.color = 'green'
+                    }
+                    else if (swallow.value.toUpperCase() == 'EUROPEAN')
+                    {
+                        swallow.style.color = 'green';
+                        response.innerHTML = '<p>Correct!</p>';
+                        response.style.color = 'green'
+                    }
+                    else
+                    {
+                        swallow.style.color = 'red';
+                        response.innerHTML = '<p>Incorrect!</p>';
+                        response.style.color = 'red'
+                    }
+                })
+            });
+        </script>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Trivia!</h1>
+        </div>
+
+        <div class="container">
+            <div class="section">
+                <h2>Part 1: Multiple Choice </h2>
+                <hr>
+                <!-- TODO: Add multiple choice question here -->
+                <h3>What is the answer to life, the universe and everything?</h3>
+                <button id="money">money</button>
+                <button id="love">love</button>
+                <button id="fourty_two">42</button>
+            </div>
+
+            <div class="section">
+                <h2>Part 2: Free Response</h2>
+                <hr>
+                <!-- TODO: Add free response question here -->
+                <h3>What is the airspeed volocity of an unladen swallow?</h3>
+                <input autocomplete="off" autofocus id="swallow" placeholder="query" text="airspeed velocity of unladen swallow?">
+                <button id="submit">submit</button>
+                <div>
+                    <p id="response"></p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

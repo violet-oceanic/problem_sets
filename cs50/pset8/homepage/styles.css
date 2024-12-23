@@ -1,0 +1,85 @@
+body
+{
+    padding: 5%;
+}
+
+#index
+{
+    background-color: lightgrey;
+}
+
+#red
+{
+    background-color:rgba(255, 0, 0, 0.5);
+}
+
+#orange
+{
+    background-color:rgba(255, 166, 0, 0.5);
+}
+
+#yellow
+{
+    background-color: rgba(255, 255, 0, 0.5);
+}
+
+#green
+{
+    background-color: rgba(0, 128, 0, 0.5);
+}
+
+#blue
+{
+    background-color: rgba(0, 0, 255, 0.5);
+}
+
+#indigo
+{
+    background-color: rgba(76, 0, 130, 0.5);
+}
+
+#violet
+{
+    background-color: rgba(238, 130, 238, 0.5);
+}
+
+.centered
+{
+    text-align: center;
+    font-size: smaller;
+}
+
+#rainbow_red
+{
+    color: red;
+}
+
+#rainbow_orange
+{
+    color: orange;
+}
+
+#rainbow_yellow
+{
+    color: yellow;
+}
+
+#rainbow_green
+{
+    color: green;
+}
+
+#rainbow_blue
+{
+    color: blue;
+}
+
+#rainbow_indigo
+{
+    color: indigo;
+}
+
+#rainbow_violet
+{
+    color: violet;
+}
